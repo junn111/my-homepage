@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>컴퓨터네트워크 미니프로젝트 - 이성준</title>
-    <!-- 구글 폰트 및 아이콘 불러오기 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -95,7 +94,7 @@
         .action-btn.del { background: #ef4444; }
         .action-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
         
-        /* 추가된 안내 구문 스타일 */
+        /* 안내 구문 전용 스타일 컴포넌트 */
         .storage-notice { background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; padding: 12px 15px; border-radius: 4px; font-size: 13px; color: #fca5a5; display: flex; align-items: flex-start; gap: 10px; }
         .storage-notice i { margin-top: 3px; color: #ef4444; }
 
@@ -113,7 +112,6 @@
 </head>
 <body>
 
-    <!-- 상단 바 -->
     <header>
         <div class="logo"><i class="fa-solid fa-network-wired"></i> NetProject</div>
         <nav>
@@ -124,7 +122,6 @@
 
     <div class="container">
         
-        <!-- [메인 섹션] -->
         <section id="sec-main" class="active">
             <div class="hero-card">
                 <h1>컴퓨터네트워크</h1>
@@ -133,7 +130,6 @@
             </div>
 
             <div class="grid-layout">
-                <!-- 기능 1: 실시간 방문자 네트워크 환경 측정 -->
                 <div class="dash-card">
                     <h3><i class="fa-solid fa-satellite-dish"></i> 나의 실시간 네트워크 연결 상태</h3>
                     <div class="net-item">
@@ -150,7 +146,6 @@
                     </div>
                 </div>
 
-                <!-- 기능 2: 프로젝트 AI 어시스턴트 -->
                 <div class="dash-card">
                     <h3><i class="fa-solid fa-robot"></i> 프로젝트 AI 어시스턴트</h3>
                     <div class="chat-box" id="chat-screen">
@@ -164,7 +159,6 @@
                     </div>
                 </div>
 
-                <!-- 기능 3: 드롭박스 연동 파일 및 이미지 스토리지 매니저 -->
                 <div class="dash-card full-grid">
                     <h3><i class="fa-solid fa-box-open"></i> 드롭박스 기반 파일 저장소 (목록 / 다운로드 / 삭제)</h3>
                     
@@ -188,7 +182,6 @@
                         </button>
                     </div>
 
-                    <!-- 화면 상에 노출되는 아키텍처 한계 및 특징 안내 구문 추가 -->
                     <div class="storage-notice">
                         <i class="fa-solid fa-circle-info"></i>
                         <span>본 저장소는 GitHub Pages 정적 서버 환경 특성상 별도의 중앙 데이터베이스 백엔드가 존재하지 않습니다. 따라서 업로드하신 파일은 <strong>현재 기기의 웹 브라우저 로컬 스토리지(localStorage)</strong>에만 격리되어 안전하게 임시 보관되며, 기기 간의 공유나 타인과의 파일 연동은 지원되지 않습니다.</span>
@@ -197,7 +190,6 @@
             </div>
         </section>
 
-        <!-- [코드 섹션] -->
         <section id="sec-code">
             <div class="code-window">
                 <div class="code-header">
@@ -211,7 +203,12 @@
     </div>
 
     <script>
-        // 1. 메뉴 네비게이션 액션 함수
+        // 1. 메뉴 네비게이션 액션 함수 (안내 구문 유실 버그 수정)
+        let initialCleanHTML = "";
+        window.addEventListener('DOMContentLoaded', () => {
+            initialCleanHTML = document.documentElement.outerHTML;
+        });
+
         function navigate(target) {
             document.getElementById('sec-main').classList.remove('active');
             document.getElementById('sec-code').classList.remove('active');
@@ -224,9 +221,7 @@
             } else {
                 document.getElementById('sec-code').classList.add('active');
                 document.getElementById('btn-code').classList.add('active');
-                
-                const currentContent = document.documentElement.outerHTML;
-                document.getElementById('code-content').innerText = currentContent;
+                document.getElementById('code-content').innerText = initialCleanHTML || document.documentElement.outerHTML;
             }
         }
 
@@ -243,7 +238,7 @@
                 });
         }, 3000);
 
-        // 3. 자율적 답변 판단 모델 함수 (날씨, 날짜, 시간 연동)
+        // 3. 자율적 답변 판단 모델 함수
         function sendChat() {
             const input = document.getElementById('chat-input');
             const screen = document.getElementById('chat-screen');
@@ -303,6 +298,7 @@
 
         function updateFileDropdown() {
             const dropdown = document.getElementById('file-dropdown');
+            if(!dropdown) return;
             dropdown.innerHTML = '<option value="">-- 업로드된 파일 목록 목록 --</option>';
 
             Object.keys(filesStorage).forEach(fileName => {
@@ -317,6 +313,7 @@
 
         function toggleFileButtons() {
             const dropdown = document.getElementById('file-dropdown');
+            if(!dropdown) return;
             const hasValue = dropdown.value !== "";
             document.getElementById('btn-download').disabled = !hasValue;
             document.getElementById('btn-delete').disabled = !hasValue;
