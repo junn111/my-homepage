@@ -68,6 +68,9 @@
         .dash-card { background: #151f32; border: 1px solid #22314d; border-radius: 12px; padding: 25px; }
         .dash-card h3 { font-size: 20px; color: #fff; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         .dash-card h3 i { color: #3b82f6; }
+        
+        /* 제목 옆에 붙는 작은 글씨용 스타일 정의 */
+        .dash-card h3 small { font-size: 13px; color: #ef4444; font-weight: 400; margin-left: 5px; }
 
         /* 네트워크 정보 항목 스타일 */
         .net-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #1e293b; font-size: 15px; }
@@ -88,15 +91,11 @@
         .file-controls select { flex: 1; background: #0f172a; color: #fff; border: 1px solid #22314d; padding: 12px; border-radius: 6px; font-size: 15px; outline: none; cursor: pointer; }
         .upload-btn { background: #10b981; color: white; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 14px; display: flex; align-items: center; gap: 8px; }
         .upload-btn input { display: none; }
-        .file-actions { display: flex; gap: 10px; margin-bottom: 20px; }
+        .file-actions { display: flex; gap: 10px; }
         .action-btn { flex: 1; border: none; padding: 12px; border-radius: 6px; color: white; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; }
         .action-btn.dl { background: #3b82f6; }
         .action-btn.del { background: #ef4444; }
         .action-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
-        
-        /* 어두운 테마에서 확 튀도록 수정한 밝은 노란색 알림창 스타일 */
-        .storage-notice { background: #fef08a; border-left: 5px solid #eab308; padding: 15px; border-radius: 6px; font-size: 14px; color: #1e293b; display: flex; align-items: flex-start; gap: 12px; font-weight: 500; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
-        .storage-notice i { color: #ca8a04; font-size: 16px; margin-top: 2px; }
 
         /* 코드 뷰어 전용 윈도우 스타일 */
         .code-window { background: #011627; border: 1px solid #1e293b; border-radius: 12px; overflow: hidden; }
@@ -160,7 +159,7 @@
                 </div>
 
                 <div class="dash-card full-grid">
-                    <h3><i class="fa-solid fa-box-open"></i> 드롭박스 기반 파일 저장소 (목록 / 다운로드 / 삭제)</h3>
+                    <h3><i class="fa-solid fa-box-open"></i> 드롭박스 기반 파일 저장소 (목록 / 다운로드 / 삭제)<small>(개인 브라우저 임시 보관용 - 기기 간 공유 불가)</small></h3>
                     
                     <div class="file-controls">
                         <select id="file-dropdown" onchange="toggleFileButtons()">
@@ -181,11 +180,6 @@
                             <i class="fa-solid fa-trash-can"></i> 선택한 파일 삭제
                         </button>
                     </div>
-
-                    <div class="storage-notice">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        <span><strong>안내 사항 (과제 채점용):</strong> 본 시스템은 별도의 중앙 데이터베이스 서버 없이 브라우저 내장 스토리지(localStorage)를 기반으로 작동합니다. 파일의 추가, 다운로드, 삭제 기능은 정상적으로 동작하나 다른 사용자와의 기기 간 파일 공유는 연동되지 않음을 명시합니다.</span>
-                    </div>
                 </div>
             </div>
         </section>
@@ -204,11 +198,6 @@
 
     <script>
         // 1. 메뉴 네비게이션 액션 함수
-        let initialCleanHTML = "";
-        window.addEventListener('DOMContentLoaded', () => {
-            initialCleanHTML = document.documentElement.outerHTML;
-        });
-
         function navigate(target) {
             document.getElementById('sec-main').classList.remove('active');
             document.getElementById('sec-code').classList.remove('active');
@@ -217,11 +206,11 @@
 
             if (target === 'main') {
                 document.getElementById('sec-main').classList.add('active');
-                document.getElementById('btn-main').add('active');
+                document.getElementById('btn-main').classList.add('active');
             } else {
                 document.getElementById('sec-code').classList.add('active');
                 document.getElementById('btn-code').classList.add('active');
-                document.getElementById('code-content').innerText = initialCleanHTML || document.documentElement.outerHTML;
+                document.getElementById('code-content').innerText = document.documentElement.outerHTML;
             }
         }
 
