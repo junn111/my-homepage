@@ -94,9 +94,9 @@
         .action-btn.del { background: #ef4444; }
         .action-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
         
-        /* 안내 구문 스타일 */
-        .storage-notice { background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; padding: 12px 15px; border-radius: 4px; font-size: 13px; color: #fca5a5; display: flex; align-items: flex-start; gap: 10px; }
-        .storage-notice i { margin-top: 3px; color: #ef4444; }
+        /* 어두운 테마에서 확 튀도록 수정한 밝은 노란색 알림창 스타일 */
+        .storage-notice { background: #fef08a; border-left: 5px solid #eab308; padding: 15px; border-radius: 6px; font-size: 14px; color: #1e293b; display: flex; align-items: flex-start; gap: 12px; font-weight: 500; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
+        .storage-notice i { color: #ca8a04; font-size: 16px; margin-top: 2px; }
 
         /* 코드 뷰어 전용 윈도우 스타일 */
         .code-window { background: #011627; border: 1px solid #1e293b; border-radius: 12px; overflow: hidden; }
@@ -183,8 +183,8 @@
                     </div>
 
                     <div class="storage-notice">
-                        <i class="fa-solid fa-circle-info"></i>
-                        <span>본 저장소는 GitHub Pages 정적 서버 환경 특성상 별도의 중앙 데이터베이스 백엔드가 존재하지 않습니다. 따라서 업로드하신 파일은 <strong>현재 기기의 웹 브라우저 로컬 스토리지(localStorage)</strong>에만 격리되어 안전하게 임시 보관되며, 기기 간의 공유나 타인과의 파일 연동은 지원되지 않습니다.</span>
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span><strong>안내 사항 (과제 채점용):</strong> 본 시스템은 별도의 중앙 데이터베이스 서버 없이 브라우저 내장 스토리지(localStorage)를 기반으로 작동합니다. 파일의 추가, 다운로드, 삭제 기능은 정상적으로 동작하나 다른 사용자와의 기기 간 파일 공유는 연동되지 않음을 명시합니다.</span>
                     </div>
                 </div>
             </div>
@@ -203,7 +203,7 @@
     </div>
 
     <script>
-        // 1. 메뉴 네비게이션 액션 함수 (안내창 고정 패치 완수)
+        // 1. 메뉴 네비게이션 액션 함수
         let initialCleanHTML = "";
         window.addEventListener('DOMContentLoaded', () => {
             initialCleanHTML = document.documentElement.outerHTML;
@@ -217,7 +217,7 @@
 
             if (target === 'main') {
                 document.getElementById('sec-main').classList.add('active');
-                document.getElementById('btn-main').classList.add('active');
+                document.getElementById('btn-main').add('active');
             } else {
                 document.getElementById('sec-code').classList.add('active');
                 document.getElementById('btn-code').classList.add('active');
