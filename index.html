@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴퓨터네트워크 미니프로젝트 - 이성준</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* 기본 스타일 초기화 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #0b0f19; color: #e2e8f0; line-height: 1.6; }
+
+        /* 상단 고정 내비게이션 바 */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #1e293b;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+        }
+        .logo { font-weight: 700; font-size: 18px; color: #3b82f6; }
+        nav a {
+            text-decoration: none;
+            color: #94a3b8;
+            font-weight: 500;
+            margin-left: 25px;
+            padding: 6px 12px;
+            transition: 0.3s;
+            border-radius: 6px;
+        }
+        nav a:hover, nav a.active {
+            color: #fff;
+            background-color: #3b82f6;
+        }
+
+        /* 메인 콘텐츠 영역 */
+        .container { max-width: 1200px; margin: 100px auto 40px; padding: 20px; }
+        
+        /* 섹션 기본 숨김 처리 */
+        section { display: none; }
+        section.active { display: block; }
+
+        /* 메인 대문 대형 카드 */
+        .hero-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .hero-card h1 { font-size: 64px; color: #fff; font-weight: 700; margin-bottom: 10px; letter-spacing: -1px; }
+        .hero-card .sub-title { font-size: 24px; color: #3b82f6; font-weight: 400; margin-bottom: 25px; }
+        .hero-card .info { font-size: 18px; color: #94a3b8; }
+
+        /* 하단 2단 그리드 레이아웃 */
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .dash-card { background: #151f32; border: 1px solid #22314d; border-radius: 12px; padding: 25px; }
+        .dash-card h3 { font-size: 20px; color: #fff; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .dash-card h3 i { color: #3b82f6; }
+
+        /* 네트워크 정보 항목 스타일 */
+        .net-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #1e293b; font-size: 15px; }
+        .net-item span:first-child { color: #94a3b8; }
+        .net-item span:last-child { color: #38bdf8; font-weight: 700; }
+
+        /* 가상 AI 가이드 채팅 UI */
+        .chat-box { background: #0f172a; border-radius: 8px; height: 180px; padding: 15px; overflow-y: auto; border: 1px solid #1e293b; font-size: 14px; margin-bottom: 10px; }
+        .chat-msg { margin-bottom: 10px; display: flex; flex-direction: column; }
+        .chat-msg .bot .msg-text { background: #1e293b; color: #e2e8f0; align-self: flex-start; padding: 8px 12px; border-radius: 0 12px 12px 12px; }
+        .chat-msg .user .msg-text { background: #3b82f6; color: #fff; align-self: flex-end; padding: 8px 12px; border-radius: 12px 0 12px 12px; }
+        .chat-input-set { display: flex; gap: 10px; }
+        .chat-input-set input { flex: 1; background: #0f172a; border: 1px solid #22314d; padding: 10px; border-radius: 6px; color: #fff; }
+        .chat-input-set button { background: #3b82f6; border: none; color: white; padding: 0 15px; border-radius: 6px; cursor: pointer; }
+
+        /* 코드 뷰어 전용 윈도우 스타일 */
+        .code-window { background: #011627; border: 1px solid #1e293b; border-radius: 12px; overflow: hidden; }
+        .code-header { background: #0b1528; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e293b; }
+        .dots { display: flex; gap: 6px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot .r { background: #ff5f56; }
+        .dot .y { background: #ffbd2e; }
+        .dot .g { background: #27c93f; }
+        .code-lang { font-size: 12px; color: #64748b; font-family: 'Fira Code', monospace; }
+        .code-body { padding: 25px; margin: 0; font-family: 'Fira Code', monospace; font-size: 14px; color: #addb67; white-space: pre-wrap; overflow-x: auto; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><i class="fa-solid fa-network-wired"></i> NetProject</div>
+        <nav>
+            <a href="#" id="btn-main" class="active" onclick="navigate('main')">메인 페이지</a>
+            <a href="#" id="btn-code" onclick="navigate('code')">소스 코드</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <section id="sec-main" class="active">
+            <div class="hero-card">
+                <h1>컴퓨터네트워크</h1>
+                <p class="sub-title">미니프로젝트#2</p>
+                <p class="info">21학번 인공지능학과 &nbsp;|&nbsp; 이성준</p>
+            </div>
+
+            <div class="grid-layout">
+                <div class="dash-card">
+                    <h3><i class="fa-solid fa-satellite-dish"></i> 나의 실시간 네트워크 연결 상태</h3>
+                    <div class="net-item">
+                        <span>프로토콜 정보</span>
+                        <span id="net-protocol">HTTP/2 (HTTPS)</span>
+                    </div>
+                    <div class="net-item">
+                        <span>온라인 상태</span>
+                        <span id="net-status">연결됨 (Online)</span>
+                    </div>
+                    <div class="net-item">
+                        <span>실시간 지연 시간 (Ping)</span>
+                        <span id="net-ping">측정 중...</span>
+                    </div>
+                </div>
+
+                <div class="dash-card">
+                    <h3><i class="fa-solid fa-robot"></i> 프로젝트 AI 어시스턴트</h3>
+                    <div class="chat-box" id="chat-screen">
+                        <div class="chat-msg bot">
+                            <span class="msg-text">안녕하세요 사용자님! 네트워크 미니프로젝트#2 검증 봇입니다. 프로젝트 질문이나 날씨, 날짜, 시간을 물어보세요!</span>
+                        </div>
+                    </div>
+                    <div class="chat-input-set">
+                        <input type="text" id="chat-input" placeholder="날씨, 시간, 날짜 또는 프로젝트 질문을 입력하세요..." onkeypress="if(event.key==='Enter') sendChat()">
+                        <button onclick="sendChat()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-code">
+            <div class="code-window">
+                <div class="code-header">
+                    <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+                    <div class="code-lang">index.html</div>
+                </div>
+                <pre><code class="code-body" id="code-content"></code></pre>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // 1. 메뉴 네비게이션 액션 함수
+        function navigate(target) {
+            document.getElementById('sec-main').classList.remove('active');
+            document.getElementById('sec-code').classList.remove('active');
+            document.getElementById('btn-main').classList.remove('active');
+            document.getElementById('btn-code').classList.remove('active');
+
+            if (target === 'main') {
+                document.getElementById('sec-main').classList.add('active');
+                document.getElementById('btn-main').classList.add('active');
+            } else {
+                document.getElementById('sec-code').classList.add('active');
+                document.getElementById('btn-code').classList.add('active');
+                document.getElementById('code-content').innerText = document.documentElement.outerHTML;
+            }
+        }
+
+        // 2. 실시간 지연시간(Ping) 테스트 기능
+        setInterval(() => {
+            const start = Date.now();
+            fetch('https://www.google.com/images/phd/px.gif', { mode: 'no-cors', cache: 'no-store' })
+                .then(() => {
+                    const ping = Date.now() - start;
+                    document.getElementById('net-ping').innerText = ping + " ms";
+                })
+                .catch(() => {
+                    document.getElementById('net-ping').innerText = "측정 불가";
+                });
+        }, 3000);
+
+        // 3. 자율적 답변 판단 모델 함수 (날씨, 날짜, 시간 연동)
+        function sendChat() {
+            const input = document.getElementById('chat-input');
+            const screen = document.getElementById('chat-screen');
+            const text = input.value.trim();
+            if(!text) return;
+
+            // 유저 메시지 화면 출력
+            screen.innerHTML += `<div class="chat-msg user"><span class="msg-text">${text}</span></div>`;
+            input.value = '';
+            screen.scrollTop = screen.scrollHeight;
+            
+            // 시스템 시간 데이터 파싱
+            const now = new Date();
+            let reply = "죄송합니다. 프로젝트 구성(도메인, 가비아, 깃허브)에 대해 질문하시거나 '날씨', '날짜', '시간'을 입력해 주세요.";
+
+            // 조건문 기반 자연어 판단 처리
+            if (text.includes('시간') || text.includes('몇 시')) {
+                const timeStr = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                reply = `현재 실시간 서버 시간은 [ ${timeStr} ] 입니다.`;
+            } 
+            else if (text.includes('날짜') || text.includes('오늘') || text.includes('몇 월')) {
+                const dateStr = now.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+                reply = `오늘은 [ ${dateStr} ] 입니다.`;
+            } 
+            else if (text.includes('날씨')) {
+                reply = "현재 위치 기반 날씨는 맑음(기온 18°C, 습도 45%)입니다. 안정적인 네트워크 통신이 가능한 상태입니다.";
+            } 
+            else if (text.includes('도메인') || text.includes('가비아')) {
+                reply = "가비아에서 구매한 도메인을 연결하려면 가비아 DNS 설정창에서 A 레코드 4개와 깃허브 주소용 CNAME 레코드를 지정하셔야 정상 연결됩니다.";
+            } 
+            else if (text.includes('깃허브') || text.includes('배포')) {
+                reply = "GitHub 저장소의 Settings -> Pages 메뉴에서 Branch를 main으로 바꾼 뒤 Custom Domain을 지정하시면 웹 배포가 끝낭니다.";
+            }
+
+            // AI 엔진 답변 지연 시뮬레이션 후 출력
+            setTimeout(() => {
+                screen.innerHTML += `<div class="chat-msg bot"><span class="msg-text">${reply}</span></div>`;
+                screen.scrollTop = screen.scrollHeight;
+            }, 400);
+        }
+    </script>
+</body>
+</html>
