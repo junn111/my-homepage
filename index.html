@@ -94,7 +94,7 @@
         .action-btn.del { background: #ef4444; }
         .action-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
         
-        /* 안내 구문 전용 스타일 컴포넌트 */
+        /* 안내 구문 스타일 */
         .storage-notice { background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; padding: 12px 15px; border-radius: 4px; font-size: 13px; color: #fca5a5; display: flex; align-items: flex-start; gap: 10px; }
         .storage-notice i { margin-top: 3px; color: #ef4444; }
 
@@ -203,7 +203,7 @@
     </div>
 
     <script>
-        // 1. 메뉴 네비게이션 액션 함수 (안내 구문 유실 버그 수정)
+        // 1. 메뉴 네비게이션 액션 함수 (안내창 고정 패치 완수)
         let initialCleanHTML = "";
         window.addEventListener('DOMContentLoaded', () => {
             initialCleanHTML = document.documentElement.outerHTML;
