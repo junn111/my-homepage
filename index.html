@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>컴퓨터네트워크 미니프로젝트 - 이성준</title>
+    <!-- 구글 폰트 및 아이콘 불러오기 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -62,8 +63,9 @@
         .hero-card .sub-title { font-size: 24px; color: #3b82f6; font-weight: 400; margin-bottom: 25px; }
         .hero-card .info { font-size: 18px; color: #94a3b8; }
 
-        /* 하단 2단 그리드 레이아웃 */
-        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        /* 하단 그리드 레이아웃 */
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; }
+        .full-grid { grid-column: span 2; }
         .dash-card { background: #151f32; border: 1px solid #22314d; border-radius: 12px; padding: 25px; }
         .dash-card h3 { font-size: 20px; color: #fff; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         .dash-card h3 i { color: #3b82f6; }
@@ -82,6 +84,17 @@
         .chat-input-set input { flex: 1; background: #0f172a; border: 1px solid #22314d; padding: 10px; border-radius: 6px; color: #fff; }
         .chat-input-set button { background: #3b82f6; border: none; color: white; padding: 0 15px; border-radius: 6px; cursor: pointer; }
 
+        /* 파일 스토리지 UI 스타일 */
+        .file-controls { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; }
+        .file-controls select { flex: 1; background: #0f172a; color: #fff; border: 1px solid #22314d; padding: 12px; border-radius: 6px; font-size: 15px; outline: none; cursor: pointer; }
+        .upload-btn { background: #10b981; color: white; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .upload-btn input { display: none; }
+        .file-actions { display: flex; gap: 10px; }
+        .action-btn { flex: 1; border: none; padding: 12px; border-radius: 6px; color: white; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; }
+        .action-btn.dl { background: #3b82f6; }
+        .action-btn.del { background: #ef4444; }
+        .action-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+
         /* 코드 뷰어 전용 윈도우 스타일 */
         .code-window { background: #011627; border: 1px solid #1e293b; border-radius: 12px; overflow: hidden; }
         .code-header { background: #0b1528; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e293b; }
@@ -96,6 +109,7 @@
 </head>
 <body>
 
+    <!-- 상단 바 -->
     <header>
         <div class="logo"><i class="fa-solid fa-network-wired"></i> NetProject</div>
         <nav>
@@ -106,6 +120,7 @@
 
     <div class="container">
         
+        <!-- [메인 섹션] -->
         <section id="sec-main" class="active">
             <div class="hero-card">
                 <h1>컴퓨터네트워크</h1>
@@ -114,6 +129,7 @@
             </div>
 
             <div class="grid-layout">
+                <!-- 기능 1: 실시간 방문자 네트워크 환경 측정 -->
                 <div class="dash-card">
                     <h3><i class="fa-solid fa-satellite-dish"></i> 나의 실시간 네트워크 연결 상태</h3>
                     <div class="net-item">
@@ -130,6 +146,7 @@
                     </div>
                 </div>
 
+                <!-- 기능 2: 프로젝트 AI 어시스턴트 -->
                 <div class="dash-card">
                     <h3><i class="fa-solid fa-robot"></i> 프로젝트 AI 어시스턴트</h3>
                     <div class="chat-box" id="chat-screen">
@@ -142,9 +159,38 @@
                         <button onclick="sendChat()"><i class="fa-solid fa-paper-plane"></i></button>
                     </div>
                 </div>
+
+                <!-- 기능 3: 드롭박스 연동 파일 및 이미지 스토리지 매니저 -->
+                <div class="dash-card full-grid">
+                    <h3><i class="fa-solid fa-box-open"></i> 드롭박스 기반 파일 저장소 (목록 / 다운로드 / 삭제)</h3>
+                    
+                    <div class="file-controls">
+                        <!-- 파일 목록이 동적으로 추가되는 드롭박스 영역 -->
+                        <select id="file-dropdown" onchange="toggleFileButtons()">
+                            <option value="">-- 업로드된 파일 목록 목록 --</option>
+                        </select>
+                        
+                        <!-- 파일 선택 및 업로드 버튼 -->
+                        <label class="upload-btn">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> 파일 선택 및 추가
+                            <input type="file" id="file-uploader" onchange="uploadFile()">
+                        </label>
+                    </div>
+
+                    <!-- 다운로드 및 삭제 제어 장치 -->
+                    <div class="file-actions">
+                        <button id="btn-download" class="action-btn dl" onclick="downloadFile()" disabled>
+                            <i class="fa-solid fa-download"></i> 선택한 파일 다운로드
+                        </button>
+                        <button id="btn-delete" class="action-btn del" onclick="deleteFile()" disabled>
+                            <i class="fa-solid fa-trash-can"></i> 선택한 파일 삭제
+                        </button>
+                    </div>
+                </div>
             </div>
         </section>
 
+        <!-- [코드 섹션] -->
         <section id="sec-code">
             <div class="code-window">
                 <div class="code-header">
@@ -195,16 +241,13 @@
             const text = input.value.trim();
             if(!text) return;
 
-            // 유저 메시지 화면 출력
             screen.innerHTML += `<div class="chat-msg user"><span class="msg-text">${text}</span></div>`;
             input.value = '';
             screen.scrollTop = screen.scrollHeight;
             
-            // 시스템 시간 데이터 파싱
             const now = new Date();
-            let reply = "죄송합니다. 프로젝트 구성(도메인, 가비아, 깃허브)에 대해 질문하시거나 '날씨', '날짜', '시간'을 입력해 주세요.";
+            let reply = "죄송합니다. 프로젝트 구성이나 '날씨', '날짜', '시간'을 입력해 주세요.";
 
-            // 조건문 기반 자연어 판단 처리
             if (text.includes('시간') || text.includes('몇 시')) {
                 const timeStr = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 reply = `현재 실시간 서버 시간은 [ ${timeStr} ] 입니다.`;
@@ -216,18 +259,86 @@
             else if (text.includes('날씨')) {
                 reply = "현재 위치 기반 날씨는 맑음(기온 18°C, 습도 45%)입니다. 안정적인 네트워크 통신이 가능한 상태입니다.";
             } 
-            else if (text.includes('도메인') || text.includes('가비아')) {
-                reply = "가비아에서 구매한 도메인을 연결하려면 가비아 DNS 설정창에서 A 레코드 4개와 깃허브 주소용 CNAME 레코드를 지정하셔야 정상 연결됩니다.";
-            } 
             else if (text.includes('깃허브') || text.includes('배포')) {
-                reply = "GitHub 저장소의 Settings -> Pages 메뉴에서 Branch를 main으로 바꾼 뒤 Custom Domain을 지정하시면 웹 배포가 끝낭니다.";
+                reply = "GitHub 저장소의 Settings -> Pages 메뉴에서 Branch를 main으로 바꾼 뒤 링크를 생성하면 웹 배포가 끝납니다.";
             }
 
-            // AI 엔진 답변 지연 시뮬레이션 후 출력
             setTimeout(() => {
                 screen.innerHTML += `<div class="chat-msg bot"><span class="msg-text">${reply}</span></div>`;
                 screen.scrollTop = screen.scrollHeight;
             }, 400);
+        }
+
+        // 4. 드롭박스 파일 매니저 기능 스크립트 기반 핵심 로직 처리
+        let filesStorage = JSON.parse(localStorage.getItem('web_storage_files')) || {};
+
+        // 초기 로드 시 드롭박스 목록 갱신
+        updateFileDropdown();
+
+        function uploadFile() {
+            const fileInput = document.getElementById('file-uploader');
+            if (!fileInput.files.length) return;
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                // 구조화된 로컬 스토리지를 활용하여 base64 바이너리 포맷팅 백업 저장
+                filesStorage[file.name] = e.target.result;
+                localStorage.setItem('web_storage_files', JSON.stringify(filesStorage));
+                updateFileDropdown();
+                fileInput.value = ''; // 인풋박스 리셋
+                alert(`파일 업로드 완료: ${file.name}`);
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function updateFileDropdown() {
+            const dropdown = document.getElementById('file-dropdown');
+            dropdown.innerHTML = '<option value="">-- 업로드된 파일 목록 목록 --</option>';
+
+            Object.keys(filesStorage).forEach(fileName => {
+                const option = document.createElement('option');
+                option.value = fileName;
+                option.text = fileName;
+                dropdown.appendChild(option);
+            });
+
+            toggleFileButtons();
+        }
+
+        function toggleFileButtons() {
+            const dropdown = document.getElementById('file-dropdown');
+            const hasValue = dropdown.value !== "";
+            document.getElementById('btn-download').disabled = !hasValue;
+            document.getElementById('btn-delete').disabled = !hasValue;
+        }
+
+        function downloadFile() {
+            const dropdown = document.getElementById('file-dropdown');
+            const fileName = dropdown.value;
+            if (!fileName || !filesStorage[fileName]) return;
+
+            const fileData = filesStorage[fileName];
+            const link = document.createElement('a');
+            link.href = fileData;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function deleteFile() {
+            const dropdown = document.getElementById('file-dropdown');
+            const fileName = dropdown.value;
+            if (!fileName) return;
+
+            if (confirm(`정말로 ${fileName} 파일을 삭제하시겠습니까?`)) {
+                delete filesStorage[fileName];
+                localStorage.setItem('web_storage_files', JSON.stringify(filesStorage));
+                updateFileDropdown();
+            }
         }
     </script>
 </body>
