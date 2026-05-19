@@ -89,11 +89,15 @@
         .file-controls select { flex: 1; background: #0f172a; color: #fff; border: 1px solid #22314d; padding: 12px; border-radius: 6px; font-size: 15px; outline: none; cursor: pointer; }
         .upload-btn { background: #10b981; color: white; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 14px; display: flex; align-items: center; gap: 8px; }
         .upload-btn input { display: none; }
-        .file-actions { display: flex; gap: 10px; }
+        .file-actions { display: flex; gap: 10px; margin-bottom: 20px; }
         .action-btn { flex: 1; border: none; padding: 12px; border-radius: 6px; color: white; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; }
         .action-btn.dl { background: #3b82f6; }
         .action-btn.del { background: #ef4444; }
         .action-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+        
+        /* 추가된 안내 구문 스타일 */
+        .storage-notice { background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; padding: 12px 15px; border-radius: 4px; font-size: 13px; color: #fca5a5; display: flex; align-items: flex-start; gap: 10px; }
+        .storage-notice i { margin-top: 3px; color: #ef4444; }
 
         /* 코드 뷰어 전용 윈도우 스타일 */
         .code-window { background: #011627; border: 1px solid #1e293b; border-radius: 12px; overflow: hidden; }
@@ -165,19 +169,16 @@
                     <h3><i class="fa-solid fa-box-open"></i> 드롭박스 기반 파일 저장소 (목록 / 다운로드 / 삭제)</h3>
                     
                     <div class="file-controls">
-                        <!-- 파일 목록이 동적으로 추가되는 드롭박스 영역 -->
                         <select id="file-dropdown" onchange="toggleFileButtons()">
                             <option value="">-- 업로드된 파일 목록 목록 --</option>
                         </select>
                         
-                        <!-- 파일 선택 및 업로드 버튼 -->
                         <label class="upload-btn">
                             <i class="fa-solid fa-cloud-arrow-up"></i> 파일 선택 및 추가
                             <input type="file" id="file-uploader" onchange="uploadFile()">
                         </label>
                     </div>
 
-                    <!-- 다운로드 및 삭제 제어 장치 -->
                     <div class="file-actions">
                         <button id="btn-download" class="action-btn dl" onclick="downloadFile()" disabled>
                             <i class="fa-solid fa-download"></i> 선택한 파일 다운로드
@@ -185,6 +186,12 @@
                         <button id="btn-delete" class="action-btn del" onclick="deleteFile()" disabled>
                             <i class="fa-solid fa-trash-can"></i> 선택한 파일 삭제
                         </button>
+                    </div>
+
+                    <!-- 화면 상에 노출되는 아키텍처 한계 및 특징 안내 구문 추가 -->
+                    <div class="storage-notice">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>본 저장소는 GitHub Pages 정적 서버 환경 특성상 별도의 중앙 데이터베이스 백엔드가 존재하지 않습니다. 따라서 업로드하신 파일은 <strong>현재 기기의 웹 브라우저 로컬 스토리지(localStorage)</strong>에만 격리되어 안전하게 임시 보관되며, 기기 간의 공유나 타인과의 파일 연동은 지원되지 않습니다.</span>
                     </div>
                 </div>
             </div>
@@ -217,7 +224,9 @@
             } else {
                 document.getElementById('sec-code').classList.add('active');
                 document.getElementById('btn-code').classList.add('active');
-                document.getElementById('code-content').innerText = document.documentElement.outerHTML;
+                
+                const currentContent = document.documentElement.outerHTML;
+                document.getElementById('code-content').innerText = currentContent;
             }
         }
 
@@ -269,10 +278,9 @@
             }, 400);
         }
 
-        // 4. 드롭박스 파일 매니저 기능 스크립트 기반 핵심 로직 처리
+        // 4. 드롭박스 파일 매니저 기능 스크립트
         let filesStorage = JSON.parse(localStorage.getItem('web_storage_files')) || {};
 
-        // 초기 로드 시 드롭박스 목록 갱신
         updateFileDropdown();
 
         function uploadFile() {
@@ -283,11 +291,10 @@
             const reader = new FileReader();
 
             reader.onload = function(e) {
-                // 구조화된 로컬 스토리지를 활용하여 base64 바이너리 포맷팅 백업 저장
                 filesStorage[file.name] = e.target.result;
                 localStorage.setItem('web_storage_files', JSON.stringify(filesStorage));
                 updateFileDropdown();
-                fileInput.value = ''; // 인풋박스 리셋
+                fileInput.value = '';
                 alert(`파일 업로드 완료: ${file.name}`);
             };
 
